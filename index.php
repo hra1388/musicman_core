@@ -1,6 +1,10 @@
 <?php
 
-require_once __DIR__ . '/vendor/autoload.php';
+if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+    require_once __DIR__ . '/vendor/autoload.php';
+} else {
+    require_once __DIR__ . '/autoload.php';
+}
 
 use App\Core\Application;
 use App\Controllers\AuthController;
@@ -32,7 +36,7 @@ $router->add('POST', '/interaction/record', [InteractionController::class, 'reco
 $router->add('POST', '/interaction/remove', [InteractionController::class, 'remove']);
 $router->add('GET', '/interaction/list', [InteractionController::class, 'list']);
 
-// Playlist Routes
+// Playlist & Album Routes
 $router->add('GET', '/pl/list', [PlaylistController::class, 'list'], false);
 $router->add('POST', '/pl/publish', [PlaylistController::class, 'publish']);
 $router->addPattern('GET', '#^/pl/get/([A-Za-z0-9_\-]+)$#', [PlaylistController::class, 'get'], false);
