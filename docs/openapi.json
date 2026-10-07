@@ -1,0 +1,86 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "MusicMan API",
+    "version": "5.0.0",
+    "description": "Production-ready, High-Scale Music Streaming & Catalog Service API with consolidated user interactions."
+  },
+  "servers": [
+    {
+      "url": "https://mm.3rah.ir/api",
+      "description": "Production Server"
+    }
+  ],
+  "paths": {
+    "/auth/telegram": {
+      "post": {
+        "summary": "Authenticate via Telegram Widget",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string" },
+                  "first_name": { "type": "string" },
+                  "hash": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Authentication Token & User details" }
+        }
+      }
+    },
+    "/search": {
+      "get": {
+        "summary": "Search music catalog",
+        "parameters": [
+          { "name": "term", "in": "query", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Search results" }
+        }
+      }
+    },
+    "/interaction/record": {
+      "post": {
+        "summary": "Consolidated User Interaction Endpoint",
+        "description": "Records likes, follows, plays, notes, and custom ratings into a unified interactions table.",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["user_id", "entity_type", "entity_id", "type"],
+                "properties": {
+                  "user_id": { "type": "integer" },
+                  "entity_type": { "type": "string", "enum": ["track", "artist", "collection", "playlist", "user"] },
+                  "entity_id": { "type": "string" },
+                  "type": { "type": "string", "enum": ["like", "follow", "play", "note", "rating"] },
+                  "value": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Interaction recorded" }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}
