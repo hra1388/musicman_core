@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: musicman-api
+  labels:
+    app: musicman-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: musicman-api
+  template:
+    metadata:
+      labels:
+        app: musicman-api
+    spec:
+      containers:
+      - name: musicman-app
+        image: musicman/api:latest
+        ports:
+        - containerPort: 9000
+        env:
+        - name: APP_ENV
+          value: "production"
+        - name: DB_HOST
+          value: "mysql-service"
+        - name: DB_NAME
+          value: "musicman"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: musicman-service
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 9000
+  selector:
+    app: musicman-api
